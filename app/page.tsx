@@ -73,10 +73,10 @@ const PRODUCTS = [
 
 export default function Home() {
   const phone = "8801736196960";
-  const [cart, setCart] = useState([]);
+  const [cart, setCart] = useState<any[]>([]);
   const [userInfo, setUserInfo] = useState({ name: "", mobile: "", address: "", location: "Inside Dhaka" });
   const [mounted, setMounted] = useState(false);
-  const [openDesc, setOpenDesc] = useState(null);
+  const [openDesc, setOpenDesc] = useState<number | null>(null);
 
   useEffect(() => { setMounted(true); }, []);
   if (!mounted) return null;
@@ -85,7 +85,7 @@ export default function Home() {
   const subtotal = cart.reduce((sum, item) => sum + item.price * item.qty, 0);
   const total = subtotal + (cart.length ? shipping : 0);
 
-  const addToCart = (product) => {
+  const addToCart = (product: any) => {
     setCart(prev => {
       const found = prev.find(p => p.id === product.id);
       if (found) return prev.map(p => p.id === product.id ? { ...p, qty: p.qty + 1 } : p);
@@ -93,13 +93,13 @@ export default function Home() {
     });
   };
 
-  const updateQty = (id, delta) => {
+  const updateQty = (id: number, delta: number) => {
     setCart(prev => prev.map(item => 
       item.id === id ? { ...item, qty: Math.max(1, item.qty + delta) } : item
     ).filter(item => item.qty > 0));
   };
 
-  const removeFromCart = (id) => setCart(cart.filter(i => i.id !== id));
+  const removeFromCart = (id: number) => setCart(cart.filter(i => i.id !== id));
 
   const sendOrder = () => {
     if (!cart.length) return alert("কার্ট খালি! পণ্য যোগ করুন।");
@@ -146,16 +146,17 @@ export default function Home() {
                   </div>
                 </div>
 
+                {/* ডেসক্রিপশন সেকশন */}
                 <div className="border-t border-b border-slate-50 py-3">
                   <button 
                     onClick={() => setOpenDesc(openDesc === p.id ? null : p.id)}
-                    className="flex items-center justify-between w-full text-xs font-black text-slate-900 uppercase tracking-widest"
+                    className="flex items-center justify-between w-full text-xs font-bold text-slate-500 uppercase tracking-widest"
                   >
                     <span>পণ্যর বিস্তারিত / Details</span>
                     <span className={`transition-transform duration-300 ${openDesc === p.id ? 'rotate-180 text-green-600' : ''}`}><ChevronDown /></span>
                   </button>
                   {openDesc === p.id && (
-                    <div className="mt-4 text-[13px] text-slate-900 font-medium leading-relaxed whitespace-pre-line bg-slate-50 p-5 rounded-3xl border border-slate-100 animate-in fade-in slide-in-from-top-4">
+                    <div className="mt-4 text-[13px] text-slate-600 leading-relaxed whitespace-pre-line bg-slate-50 p-5 rounded-3xl border border-slate-100 animate-in fade-in slide-in-from-top-4">
                       {p.description}
                     </div>
                   )}
@@ -167,7 +168,7 @@ export default function Home() {
           ))}
         </div>
 
-        {/* Order Details Section */}
+        {/* 🛍️ Your Cart Section */}
         {cart.length > 0 && (
           <div className="bg-white rounded-[32px] p-6 border border-slate-100 shadow-sm space-y-6">
             <h2 className="font-black text-slate-800 text-lg flex items-center gap-2">🛍️ অর্ডার ডিটেইলস</h2>
@@ -178,7 +179,7 @@ export default function Home() {
                   <div className="flex items-center gap-4">
                     <div className="flex items-center gap-3 bg-white px-3 py-1 rounded-xl border border-slate-200">
                         <button onClick={() => updateQty(item.id, -1)}><MinusIcon /></button>
-                        <span className="font-black w-4 text-center text-black">{item.qty}</span>
+                        <span className="font-black w-4 text-center">{item.qty}</span>
                         <button onClick={() => updateQty(item.id, 1)}><PlusIcon /></button>
                     </div>
                     <button onClick={() => removeFromCart(item.id)} className="text-red-300"><TrashIcon /></button>
@@ -189,35 +190,26 @@ export default function Home() {
           </div>
         )}
 
-        {/* User Info Section (Updated Titles and Input Styles) */}
+        {/* User Form */}
         <div className="bg-white rounded-[32px] p-8 border border-slate-100 shadow-sm space-y-6">
           <h2 className="font-black text-slate-800 text-xl">🛒 আপনার তথ্য দিন</h2>
-          <div className="space-y-5">
-            <div>
-              <label className="block text-black font-black text-sm mb-2 ml-1">আপনার নাম</label>
-              <input 
-                placeholder="নাম লিখুন..." 
-                className="w-full bg-slate-50 rounded-[20px] p-5 outline-none focus:ring-2 focus:ring-green-500/20 text-black font-bold placeholder:text-slate-400" 
-                onChange={e => setUserInfo({...userInfo, name: e.target.value})} 
-              />
-            </div>
-            <div>
-              <label className="block text-black font-black text-sm mb-2 ml-1">মোবাইল নম্বর</label>
-              <input 
-                placeholder="০১XXXXXXXXX" 
-                className="w-full bg-slate-50 rounded-[20px] p-5 outline-none focus:ring-2 focus:ring-green-500/20 text-black font-bold placeholder:text-slate-400" 
-                onChange={e => setUserInfo({...userInfo, mobile: e.target.value})} 
-              />
-            </div>
-            <div>
-              <label className="block text-black font-black text-sm mb-2 ml-1">পুরো ঠিকানা</label>
-              <textarea 
-                placeholder="গ্রাম/রোড, থানা, জেলা..." 
-                className="w-full bg-slate-50 rounded-[20px] p-5 outline-none focus:ring-2 focus:ring-green-500/20 text-black font-bold placeholder:text-slate-400" 
-                rows={2} 
-                onChange={e => setUserInfo({...userInfo, address: e.target.value})} 
-              />
-            </div>
+          <div className="space-y-4">
+            <input 
+              placeholder="আপনার নাম" 
+              className="w-full bg-slate-50 rounded-[20px] p-5 outline-none focus:ring-2 focus:ring-green-500/20 placeholder:text-black placeholder:font-bold" 
+              onChange={e => setUserInfo({...userInfo, name: e.target.value})} 
+            />
+            <input 
+              placeholder="মোবাইল নম্বর" 
+              className="w-full bg-slate-50 rounded-[20px] p-5 outline-none focus:ring-2 focus:ring-green-500/20 placeholder:text-black placeholder:font-bold" 
+              onChange={e => setUserInfo({...userInfo, mobile: e.target.value})} 
+            />
+            <textarea 
+              placeholder="পুরো ঠিকানা" 
+              className="w-full bg-slate-50 rounded-[20px] p-5 outline-none focus:ring-2 focus:ring-green-500/20 placeholder:text-black placeholder:font-bold" 
+              rows={2} 
+              onChange={e => setUserInfo({...userInfo, address: e.target.value})} 
+            />
           </div>
           <div className="flex gap-3">
             <button onClick={() => setUserInfo({...userInfo, location: "Inside Dhaka"})} className={`flex-1 py-5 rounded-[20px] text-xs font-black uppercase ${userInfo.location === "Inside Dhaka" ? "bg-slate-900 text-white" : "bg-slate-100 text-slate-400"}`}>Dhaka City</button>
@@ -225,7 +217,7 @@ export default function Home() {
           </div>
         </div>
 
-        {/* Summary Card */}
+        {/* অর্ডার কনফার্মেশন বক্স */}
         <div className="bg-[#E9F2FF] rounded-[24px] p-6 border border-blue-100 shadow-sm space-y-4">
           <h2 className="font-bold text-slate-800 flex items-center gap-2">📦 অর্ডার কনফার্মেশন | NexKart</h2>
           <div className="space-y-2 text-[15px] text-slate-700">
@@ -253,7 +245,7 @@ export default function Home() {
         </div>
       </div>
 
-      {/* Sticky Footer */}
+      {/* Footer */}
       <div className="fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-xl border-t p-6 pb-10 flex justify-center shadow-lg z-[90]">
         <div className="w-full max-w-lg flex justify-between items-center gap-6">
           <div className="flex flex-col">
