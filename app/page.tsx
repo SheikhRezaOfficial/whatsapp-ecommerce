@@ -10,10 +10,10 @@ const MinusIcon = () => <span>−</span>;
 const ChevronDown = () => <span>▼</span>;
 
 const PRODUCTS = [
-  { 
-    id: 1, 
-    name: "AirPods Pro 2nd Gen (Black)", 
-    price: 599, 
+  {
+    id: 1,
+    name: "AirPods Pro 2nd Gen (Black)",
+    price: 599,
     oldPrice: 799,
     image: "/IMG_1161.JPG.jpeg",
     description: `🔰 কালার: কালো🖤
@@ -28,10 +28,10 @@ const PRODUCTS = [
 
 🎧 ডেইলি ইউজ ও মিউজিক লাভারদের জন্য পারফেক্ট চয়েস!`
   },
-  { 
-    id: 2, 
-    name: "AirPods Pro 2nd Gen (White)", 
-    price: 549, 
+  {
+    id: 2,
+    name: "AirPods Pro 2nd Gen (White)",
+    price: 549,
     oldPrice: 699,
     image: "/IMG_1146.PNG",
     description: `🔰 কালার: সাদা🤍
@@ -46,15 +46,17 @@ const PRODUCTS = [
 
 🎧 ডেইলি ইউজ ও মিউজিক লাভারদের জন্য পারফেক্ট চয়েস!`
   },
-  { 
-    id: 3, 
-    name: "Recrsi Re NY-060 Neckband", 
-    price: 599, 
+  {
+    id: 3,
+    name: "Recrsi Re NY-060 Neckband",
+    price: 599,
     oldPrice: 850,
     image: "/IMG_8533.JPG.jpeg",
     description: `এক চার্জেই টানা ১৫ দিন পর্যন্ত ব্যাকআপ 🔋
+
 সস্তা ও ঝামেলার প্রোডাক্ট নয়—
 💡 বাজেট একটু বাড়ান, কোয়ালিটিতে শান্তি নিন।
+
 মিউজিক শোনা হোক বা কল—দুটোতেই পাবেন আলাদা আরাম 🎶📞
 
 📌 নেকব্যান্ডটির প্রিমিয়াম ফিচারসমূহ:
@@ -73,6 +75,7 @@ const PRODUCTS = [
 
 export default function Home() {
   const phone = "8801736196960";
+
   const [cart, setCart] = useState<any[]>([]);
   const [userInfo, setUserInfo] = useState({ name: "", mobile: "", address: "", location: "Inside Dhaka" });
   const [mounted, setMounted] = useState(false);
@@ -94,7 +97,7 @@ export default function Home() {
   };
 
   const updateQty = (id: number, delta: number) => {
-    setCart(prev => prev.map(item => 
+    setCart(prev => prev.map(item =>
       item.id === id ? { ...item, qty: Math.max(1, item.qty + delta) } : item
     ).filter(item => item.qty > 0));
   };
@@ -107,12 +110,13 @@ export default function Home() {
 
     const orderList = cart.map(p => `• ${p.name} (x${p.qty}) = ৳${p.price * p.qty}`).join("\n");
     const msg = `📦 *অর্ডার কনফার্মেশন | NexKart* \n\n👤 *নাম:* ${userInfo.name}\n📞 *ফোন নাম্বার:* ${userInfo.mobile}\n📍 *ঠিকানা:* ${userInfo.address}\n🏠 *Inside Dhaka:* ${userInfo.location === "Inside Dhaka" ? "Yes" : "No"}\n\n🛍️ *অর্ডার ডিটেইলস:*\n${orderList}\n\n--------------------------\n🧱 *সর্বমোট =* ৳${subtotal} Total\n🛳️ *শিপিং খরচ:* ৳${shipping}\n💰 *মোট খরচ: ৳${total}*\n\n✅ অর্ডারটি কনফার্ম হয়েছে। ধন্যবাদ! 💙`;
-    
+
     window.open(`https://wa.me/${phone}?text=${encodeURIComponent(msg)}`, "_blank");
   };
 
   return (
     <main className="min-h-screen bg-[#F1F5F9] pb-40 font-sans">
+
       {/* Header */}
       <nav className="sticky top-0 z-[100] w-full bg-white/80 px-6 py-4 shadow-sm backdrop-blur-xl border-b border-slate-100">
         <div className="mx-auto flex max-w-lg items-center justify-between">
@@ -130,6 +134,7 @@ export default function Home() {
       </nav>
 
       <div className="max-w-lg mx-auto p-4 space-y-10">
+
         {/* Product Cards */}
         <div className="grid grid-cols-1 gap-8 mt-4">
           {PRODUCTS.map(p => (
@@ -146,9 +151,8 @@ export default function Home() {
                   </div>
                 </div>
 
-                {/* ডেসক্রিপশন সেকশন */}
                 <div className="border-t border-b border-slate-50 py-3">
-                  <button 
+                  <button
                     onClick={() => setOpenDesc(openDesc === p.id ? null : p.id)}
                     className="flex items-center justify-between w-full text-xs font-bold text-slate-500 uppercase tracking-widest"
                   >
@@ -168,7 +172,7 @@ export default function Home() {
           ))}
         </div>
 
-        {/* 🛍️ Your Cart Section */}
+        {/* Cart Section */}
         {cart.length > 0 && (
           <div className="bg-white rounded-[32px] p-6 border border-slate-100 shadow-sm space-y-6">
             <h2 className="font-black text-slate-800 text-lg flex items-center gap-2">🛍️ অর্ডার ডিটেইলস</h2>
@@ -178,9 +182,9 @@ export default function Home() {
                   <div className="flex-1 pr-2"><p className="font-bold text-sm text-slate-800">{item.name}</p></div>
                   <div className="flex items-center gap-4">
                     <div className="flex items-center gap-3 bg-white px-3 py-1 rounded-xl border border-slate-200">
-                        <button onClick={() => updateQty(item.id, -1)}><MinusIcon /></button>
-                        <span className="font-black w-4 text-center">{item.qty}</span>
-                        <button onClick={() => updateQty(item.id, 1)}><PlusIcon /></button>
+                      <button onClick={() => updateQty(item.id, -1)}><MinusIcon /></button>
+                      <span className="font-black w-4 text-center">{item.qty}</span>
+                      <button onClick={() => updateQty(item.id, 1)}><PlusIcon /></button>
                     </div>
                     <button onClick={() => removeFromCart(item.id)} className="text-red-300"><TrashIcon /></button>
                   </div>
@@ -190,34 +194,60 @@ export default function Home() {
           </div>
         )}
 
-        {/* User Form */}
+        {/* User Information Section */}
         <div className="bg-white rounded-[32px] p-8 border border-slate-100 shadow-sm space-y-6">
-          <h2 className="font-black text-slate-800 text-xl">🛒 আপনার তথ্য দিন</h2>
-          <div className="space-y-4">
-            <input 
-              placeholder="আপনার নাম" 
-              className="w-full bg-slate-50 rounded-[20px] p-5 outline-none focus:ring-2 focus:ring-green-500/20 placeholder:text-black placeholder:font-bold" 
-              onChange={e => setUserInfo({...userInfo, name: e.target.value})} 
-            />
-            <input 
-              placeholder="মোবাইল নম্বর" 
-              className="w-full bg-slate-50 rounded-[20px] p-5 outline-none focus:ring-2 focus:ring-green-500/20 placeholder:text-black placeholder:font-bold" 
-              onChange={e => setUserInfo({...userInfo, mobile: e.target.value})} 
-            />
-            <textarea 
-              placeholder="পুরো ঠিকানা" 
-              className="w-full bg-slate-50 rounded-[20px] p-5 outline-none focus:ring-2 focus:ring-green-500/20 placeholder:text-black placeholder:font-bold" 
-              rows={2} 
-              onChange={e => setUserInfo({...userInfo, address: e.target.value})} 
-            />
+          <h2 className="font-black text-slate-800 text-xl flex items-center gap-3">
+            <span>🛒</span>
+            <span>আপনার তথ্য দিন</span>
+          </h2>
+
+          <div className="space-y-6">
+            <div className="space-y-2">
+              <label className="block text-sm font-bold text-slate-700">আপনার নাম</label>
+              <input
+                placeholder="যেমন: রহিম উদ্দিন"
+                className="w-full bg-slate-50 rounded-[20px] p-5 outline-none focus:ring-2 focus:ring-green-500/20 text-black font-bold placeholder:text-slate-400 placeholder:font-normal"
+                onChange={e => setUserInfo({...userInfo, name: e.target.value})}
+              />
+            </div>
+
+            <div className="space-y-2">
+              <label className="block text-sm font-bold text-slate-700">মোবাইল নম্বর</label>
+              <input
+                placeholder="যেমন: 01XXXXXXXXX"
+                className="w-full bg-slate-50 rounded-[20px] p-5 outline-none focus:ring-2 focus:ring-green-500/20 text-black font-bold placeholder:text-slate-400 placeholder:font-normal"
+                onChange={e => setUserInfo({...userInfo, mobile: e.target.value})}
+              />
+            </div>
+
+            <div className="space-y-2">
+              <label className="block text-sm font-bold text-slate-700">পুরো ঠিকানা</label>
+              <textarea
+                placeholder="বাসা/ফ্ল্যাট নং, রোড নং, এলাকা, থানা, ঢাকা"
+                className="w-full bg-slate-50 rounded-[20px] p-5 outline-none focus:ring-2 focus:ring-green-500/20 text-black font-bold placeholder:text-slate-400 placeholder:font-normal"
+                rows={3}
+                onChange={e => setUserInfo({...userInfo, address: e.target.value})}
+              />
+            </div>
           </div>
-          <div className="flex gap-3">
-            <button onClick={() => setUserInfo({...userInfo, location: "Inside Dhaka"})} className={`flex-1 py-5 rounded-[20px] text-xs font-black uppercase ${userInfo.location === "Inside Dhaka" ? "bg-slate-900 text-white" : "bg-slate-100 text-slate-400"}`}>Dhaka City</button>
-            <button onClick={() => setUserInfo({...userInfo, location: "Outside Dhaka"})} className={`flex-1 py-5 rounded-[20px] text-xs font-black uppercase ${userInfo.location === "Outside Dhaka" ? "bg-slate-900 text-white" : "bg-slate-100 text-slate-400"}`}>Outside</button>
+
+          <div className="flex gap-3 mt-4">
+            <button 
+              onClick={() => setUserInfo({...userInfo, location: "Inside Dhaka"})} 
+              className={`flex-1 py-5 rounded-[20px] text-xs font-black uppercase transition-colors ${userInfo.location === "Inside Dhaka" ? "bg-slate-900 text-white" : "bg-slate-100 text-slate-400 hover:bg-slate-200"}`}
+            >
+              Dhaka City
+            </button>
+            <button 
+              onClick={() => setUserInfo({...userInfo, location: "Outside Dhaka"})} 
+              className={`flex-1 py-5 rounded-[20px] text-xs font-black uppercase transition-colors ${userInfo.location === "Outside Dhaka" ? "bg-slate-900 text-white" : "bg-slate-100 text-slate-400 hover:bg-slate-200"}`}
+            >
+              Outside Dhaka
+            </button>
           </div>
         </div>
 
-        {/* অর্ডার কনফার্মেশন বক্স */}
+        {/* Order Confirmation Box */}
         <div className="bg-[#E9F2FF] rounded-[24px] p-6 border border-blue-100 shadow-sm space-y-4">
           <h2 className="font-bold text-slate-800 flex items-center gap-2">📦 অর্ডার কনফার্মেশন | NexKart</h2>
           <div className="space-y-2 text-[15px] text-slate-700">
@@ -243,17 +273,24 @@ export default function Home() {
             <p>✅ অর্ডারটি কনফার্ম হয়েছে। ধন্যবাদ **NexKart** থেকে অর্ডার করার জন্য! 💙</p>
           </div>
         </div>
+
       </div>
 
-      {/* Footer */}
+      {/* Fixed Bottom Bar */}
       <div className="fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-xl border-t p-6 pb-10 flex justify-center shadow-lg z-[90]">
         <div className="w-full max-w-lg flex justify-between items-center gap-6">
           <div className="flex flex-col">
             <span className="text-3xl font-black text-green-600">৳{total}</span>
           </div>
-          <button onClick={sendOrder} className="flex-1 bg-green-600 text-white h-16 rounded-3xl font-black shadow-lg active:scale-95 transition-all">অর্ডার করুন 🚀</button>
+          <button 
+            onClick={sendOrder} 
+            className="flex-1 bg-green-600 text-white h-16 rounded-3xl font-black shadow-lg active:scale-95 transition-all"
+          >
+            অর্ডার করুন 🚀
+          </button>
         </div>
       </div>
+
     </main>
   );
 }
