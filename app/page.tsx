@@ -2,9 +2,6 @@
 
 import { useState, useEffect } from "react";
 
-// ব্রাউজার ট্যাবের টাইটেল পরিবর্তন করার জন্য (Metadata works in Layout or Page)
-// যেহেতু এটি client component, আমরা useEffect দিয়ে টাইটেল সেট করছি।
-
 // কাস্টম আইকন
 const ShoppingCartIcon = () => <span>🛒</span>;
 const TrashIcon = () => <span>🗑️</span>;
@@ -81,12 +78,7 @@ export default function Home() {
   const [mounted, setMounted] = useState(false);
   const [openDesc, setOpenDesc] = useState(null);
 
-  useEffect(() => { 
-    setMounted(true); 
-    // ব্রাউজার ট্যাবের নাম পরিবর্তন
-    document.title = "NexKart - Premium Gadgets Shop";
-  }, []);
-
+  useEffect(() => { setMounted(true); }, []);
   if (!mounted) return null;
 
   const shipping = userInfo.location === "Inside Dhaka" ? 70 : 120;
@@ -197,7 +189,7 @@ export default function Home() {
           </div>
         )}
 
-        {/* User Info Section */}
+        {/* User Info Section (Updated Titles and Input Styles) */}
         <div className="bg-white rounded-[32px] p-8 border border-slate-100 shadow-sm space-y-6">
           <h2 className="font-black text-slate-800 text-xl">🛒 আপনার তথ্য দিন</h2>
           <div className="space-y-5">
