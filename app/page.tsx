@@ -77,6 +77,7 @@ export default function Home() {
   const phone = "8801736196960";
 
   const [cart, setCart] = useState<any[]>([]);
+  const [showCart, setShowCart] = useState(false);
   const [userInfo, setUserInfo] = useState({ name: "", mobile: "", address: "", location: "Inside Dhaka" });
   const [mounted, setMounted] = useState(false);
   const [openDesc, setOpenDesc] = useState<number | null>(null);
@@ -94,6 +95,7 @@ export default function Home() {
       if (found) return prev.map(p => p.id === product.id ? { ...p, qty: p.qty + 1 } : p);
       return [...prev, { ...product, qty: 1 }];
     });
+    setShowCart(true);
   };
 
   const updateQty = (id: number, delta: number) => {
@@ -126,9 +128,16 @@ export default function Home() {
             </div>
             <h1 className="text-xl font-black text-green-600 tracking-tighter uppercase">NexKart</h1>
           </div>
-          <div className="p-3 bg-slate-50 rounded-2xl border border-slate-100 relative">
+          <div 
+            className="p-3 bg-slate-50 rounded-2xl border border-slate-100 relative cursor-pointer active:scale-95 transition-transform"
+            onClick={() => setShowCart(!showCart)}
+          >
             <ShoppingCartIcon />
-            {cart.length > 0 && <span className="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] w-5 h-5 rounded-full flex items-center justify-center font-bold border-2 border-white">{cart.length}</span>}
+            {cart.length > 0 && (
+              <span className="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] w-5 h-5 rounded-full flex items-center justify-center font-bold border-2 border-white">
+                {cart.length}
+              </span>
+            )}
           </div>
         </div>
       </nav>
@@ -137,56 +146,95 @@ export default function Home() {
 
         {/* Product Cards */}
         <div className="grid grid-cols-1 gap-8 mt-4">
-          {PRODUCTS.map(p => (
-            <div key={p.id} className="bg-white rounded-[40px] shadow-sm border border-slate-100 overflow-hidden">
-              <div className="h-72 w-full bg-slate-100">
-                <img src={p.image} className="w-full h-full object-cover" alt={p.name} />
-              </div>
-              <div className="p-7 space-y-4">
-                <div className="flex justify-between items-start">
-                  <h3 className="font-bold text-lg text-slate-800 leading-tight">{p.name}</h3>
-                  <div className="text-right">
-                    <p className="text-green-600 font-black text-xl">৳{p.price}</p>
-                    <p className="text-[10px] text-slate-400 line-through">৳{p.oldPrice}</p>
-                  </div>
-                </div>
+          {PRODUCTS.map(p => {
+            const qty = cart.find(item => item.id === p.id)?.qty || 0;
 
-                <div className="border-t border-b border-slate-50 py-3">
-                  <button
-                    onClick={() => setOpenDesc(openDesc === p.id ? null : p.id)}
-                    className="flex items-center justify-between w-full text-xs font-bold text-slate-500 uppercase tracking-widest"
-                  >
-                    <span>পণ্যর বিস্তারিত / Details</span>
-                    <span className={`transition-transform duration-300 ${openDesc === p.id ? 'rotate-180 text-green-600' : ''}`}><ChevronDown /></span>
-                  </button>
-                  {openDesc === p.id && (
-                    <div className="mt-4 text-[13px] text-slate-600 leading-relaxed whitespace-pre-line bg-slate-50 p-5 rounded-3xl border border-slate-100 animate-in fade-in slide-in-from-top-4">
-                      {p.description}
+            return (
+              <div key={p.id} className="bg-white rounded-[40px] shadow-sm border border-slate-100 overflow-hidden">
+                <div className="h-72 w-full bg-slate-100">
+                  <img src={p.image} className="w-full h-full object-cover" alt={p.name} />
+                </div>
+                <div className="p-7 space-y-4">
+                  <div className="flex justify-between items-start">
+                    <h3 className="font-bold text-lg text-slate-800 leading-tight">{p.name}</h3>
+                    <div className="text-right">
+                      <p className="text-green-600 font-black text-xl">৳{p.price}</p>
+                      <p className="text-[10px] text-slate-400 line-through">৳{p.oldPrice}</p>
                     </div>
-                  )}
-                </div>
+                  </div>
 
-                <button onClick={() => addToCart(p)} className="w-full bg-green-600 text-white py-4 rounded-2xl font-bold text-sm shadow-lg shadow-green-100 active:scale-95 transition-all">কার্টে যোগ করুন</button>
+                  <div className="border-t border-b border-slate-50 py-3">
+                    <button
+                      onClick={() => setOpenDesc(openDesc === p.id ? null : p.id)}
+                      className="flex items-center justify-between w-full text-xs font-bold text-slate-500 uppercase tracking-widest"
+                    >
+                      <span>পণ্যর বিস্তারিত / Details</span>
+                      <span className={`transition-transform duration-300 ${openDesc === p.id ? 'rotate-180 text-green-600' : ''}`}>
+                        <ChevronDown />
+                      </span>
+                    </button>
+                    {openDesc === p.id && (
+                      <div className="mt-4 text-[13px] text-slate-600 leading-relaxed whitespace-pre-line bg-slate-50 p-5 rounded-3xl border border-slate-100 animate-in fade-in slide-in-from-top-4">
+                        {p.description}
+                      </div>
+                    )}
+                  </div>
+
+                  <button 
+                    onClick={() => addToCart(p)} 
+                    className={`w-full text-white py-4 rounded-2xl font-bold text-sm shadow-lg active:scale-95 transition-all flex items-center justify-between px-6
+                      ${qty > 0 ? 'bg-green-700 hover:bg-green-800' : 'bg-green-600 hover:bg-green-700'}`}
+                  >
+                    <span>{qty > 0 ? "আরও যোগ করুন" : "কার্টে যোগ করুন"}</span>
+                    
+                    {qty > 0 && (
+                      <span className="bg-white/25 px-4 py-1.5 rounded-xl text-white font-black text-base min-w-[3rem] text-center border border-white/40 shadow-sm">
+                        {qty}
+                      </span>
+                    )}
+                  </button>
+                </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
 
-        {/* Cart Section */}
-        {cart.length > 0 && (
-          <div className="bg-white rounded-[32px] p-6 border border-slate-100 shadow-sm space-y-6">
-            <h2 className="font-black text-slate-800 text-lg flex items-center gap-2">🛍️ অর্ডার ডিটেইলস</h2>
+        {/* Cart Section – সাবটোটাল, শিপিং, মোট ছাড়া */}
+        {showCart && cart.length > 0 && (
+          <div className="bg-white rounded-[32px] p-6 border border-slate-100 shadow-sm space-y-6 animate-in fade-in slide-in-from-top-4">
+            <div className="flex justify-between items-center">
+              <h2 className="font-black text-slate-800 text-lg flex items-center gap-2">🛍️ আপনার কার্ট</h2>
+              <button 
+                onClick={() => setShowCart(false)}
+                className="text-slate-500 hover:text-slate-800 text-xl font-bold"
+              >
+                ✕
+              </button>
+            </div>
+            
             <div className="space-y-4">
               {cart.map(item => (
                 <div key={item.id} className="flex justify-between items-center bg-slate-50 p-4 rounded-2xl">
-                  <div className="flex-1 pr-2"><p className="font-bold text-sm text-slate-800">{item.name}</p></div>
+                  <div className="flex-1 pr-3">
+                    <p className="font-bold text-sm text-slate-800">{item.name}</p>
+                    <p className="text-xs text-slate-500 mt-0.5">৳{item.price} × {item.qty}</p>
+                  </div>
                   <div className="flex items-center gap-4">
                     <div className="flex items-center gap-3 bg-white px-3 py-1 rounded-xl border border-slate-200">
-                      <button onClick={() => updateQty(item.id, -1)}><MinusIcon /></button>
-                      <span className="font-black w-4 text-center">{item.qty}</span>
-                      <button onClick={() => updateQty(item.id, 1)}><PlusIcon /></button>
+                      <button onClick={() => updateQty(item.id, -1)} className="text-slate-600 text-lg">
+                        <MinusIcon />
+                      </button>
+                      <span className="font-black w-6 text-center text-base">{item.qty}</span>
+                      <button onClick={() => updateQty(item.id, 1)} className="text-slate-600 text-lg">
+                        <PlusIcon />
+                      </button>
                     </div>
-                    <button onClick={() => removeFromCart(item.id)} className="text-red-300"><TrashIcon /></button>
+                    <button 
+                      onClick={() => removeFromCart(item.id)} 
+                      className="text-red-400 hover:text-red-600 transition-colors"
+                    >
+                      <TrashIcon />
+                    </button>
                   </div>
                 </div>
               ))}
@@ -207,6 +255,7 @@ export default function Home() {
               <input
                 placeholder="যেমন: রহিম উদ্দিন"
                 className="w-full bg-slate-50 rounded-[20px] p-5 outline-none focus:ring-2 focus:ring-green-500/20 text-black font-bold placeholder:text-slate-400 placeholder:font-normal"
+                value={userInfo.name}
                 onChange={e => setUserInfo({...userInfo, name: e.target.value})}
               />
             </div>
@@ -216,6 +265,7 @@ export default function Home() {
               <input
                 placeholder="যেমন: 01XXXXXXXXX"
                 className="w-full bg-slate-50 rounded-[20px] p-5 outline-none focus:ring-2 focus:ring-green-500/20 text-black font-bold placeholder:text-slate-400 placeholder:font-normal"
+                value={userInfo.mobile}
                 onChange={e => setUserInfo({...userInfo, mobile: e.target.value})}
               />
             </div>
@@ -226,6 +276,7 @@ export default function Home() {
                 placeholder="বাসা/ফ্ল্যাট নং, রোড নং, এলাকা, থানা, ঢাকা"
                 className="w-full bg-slate-50 rounded-[20px] p-5 outline-none focus:ring-2 focus:ring-green-500/20 text-black font-bold placeholder:text-slate-400 placeholder:font-normal"
                 rows={3}
+                value={userInfo.address}
                 onChange={e => setUserInfo({...userInfo, address: e.target.value})}
               />
             </div>
@@ -247,46 +298,49 @@ export default function Home() {
           </div>
         </div>
 
-        {/* Order Confirmation Box */}
+        {/* Order Confirmation Preview */}
         <div className="bg-[#E9F2FF] rounded-[24px] p-6 border border-blue-100 shadow-sm space-y-4">
-          <h2 className="font-bold text-slate-800 flex items-center gap-2">📦 অর্ডার কনফার্মেশন | NexKart</h2>
+          <h2 className="font-bold text-slate-800 flex items-center gap-2">📦 অর্ডার সামারি</h2>
           <div className="space-y-2 text-[15px] text-slate-700">
-            <p>👤 <b>নাম:</b> {userInfo.name || "No Name Provided"}</p>
-            <p>📞 <b>ফোন নাম্বার:</b> {userInfo.mobile || "No Phone Provided"}</p>
-            <p>📍 <b>ঠিকানা:</b> {userInfo.address || "No Shipping Address Provided"}</p>
-            <p>🏠 <b>ঢাকার ভিতরে:</b> {userInfo.location === "Inside Dhaka" ? "YES - (হ্যাঁ)" : "NO - (না)"}</p>
+            <p>👤 <b>নাম:</b> {userInfo.name || "—"}</p>
+            <p>📞 <b>ফোন:</b> {userInfo.mobile || "—"}</p>
+            <p>📍 <b>ঠিকানা:</b> {userInfo.address || "—"}</p>
+            <p>🏠 <b>ঢাকার ভিতরে:</b> {userInfo.location === "Inside Dhaka" ? "হ্যাঁ" : "না"}</p>
           </div>
           <div className="border-t border-blue-200 pt-4">
-            <p className="font-bold text-slate-800 mb-2">🛍️ অর্ডার ডিটেইলস:</p>
+            <p className="font-bold text-slate-800 mb-2">🛍️ পণ্য:</p>
             {cart.length > 0 ? (
-              cart.map((p, i) => <p key={i} className="text-sm italic text-slate-600">• {p.name} (x{p.qty}) = ৳{p.price * p.qty}</p>)
+              cart.map((p, i) => <p key={i} className="text-sm text-slate-600">• {p.name} × {p.qty} = ৳{p.price * p.qty}</p>)
             ) : (
-              <p className="text-sm italic text-slate-500">No Products Selected</p>
+              <p className="text-sm italic text-slate-500">কোনো পণ্য নির্বাচন করা হয়নি</p>
             )}
           </div>
           <div className="border-t border-blue-200 pt-4 space-y-1 text-slate-800">
-            <p>🧱 <b>সর্বমোট =</b> ৳{subtotal} Total</p>
-            <p>🛳️ <b>শিপিং খরচ:</b> ৳{cart.length ? shipping : 0}</p>
-            <p className="text-lg font-black text-green-700">💰 মোট খরচ: ৳{total}</p>
-          </div>
-          <div className="bg-white/50 p-3 rounded-xl border border-blue-100 text-[13px] text-slate-700">
-            <p>✅ অর্ডারটি কনফার্ম হয়েছে। ধন্যবাদ **NexKart** থেকে অর্ডার করার জন্য! 💙</p>
+            <p>🧱 <b>সাবটোটাল:</b> ৳{subtotal}</p>
+            <p>🛳️ <b>শিপিং:</b> ৳{cart.length ? shipping : 0}</p>
+            <p className="text-lg font-black text-green-700">💰 মোট: ৳{total}</p>
           </div>
         </div>
 
       </div>
 
       {/* Fixed Bottom Bar */}
-      <div className="fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-xl border-t p-6 pb-10 flex justify-center shadow-lg z-[90]">
-        <div className="w-full max-w-lg flex justify-between items-center gap-6">
-          <div className="flex flex-col">
-            <span className="text-3xl font-black text-green-600">৳{total}</span>
+      <div className="fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-xl border-t p-5 pb-10 flex justify-center shadow-2xl z-[90]">
+        <div className="w-full max-w-lg flex justify-between items-center gap-5">
+          <div className="flex flex-col items-start">
+            <span className="text-xs text-slate-500">মোট</span>
+            <span className="text-2xl sm:text-3xl font-black text-green-700">৳{total}</span>
           </div>
           <button 
             onClick={sendOrder} 
-            className="flex-1 bg-green-600 text-white h-16 rounded-3xl font-black shadow-lg active:scale-95 transition-all"
+            disabled={cart.length === 0}
+            className={`flex-1 h-16 rounded-3xl font-black text-lg shadow-xl transition-all ${
+              cart.length > 0 
+                ? "bg-green-600 text-white active:scale-95 hover:bg-green-700" 
+                : "bg-slate-300 text-slate-500 cursor-not-allowed"
+            }`}
           >
-            অর্ডার করুন 🚀
+            অর্ডার কনফার্ম করুন 🚀
           </button>
         </div>
       </div>
