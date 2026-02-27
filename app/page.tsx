@@ -287,13 +287,13 @@ export default function Home() {
               onClick={() => setUserInfo({...userInfo, location: "Inside Dhaka"})} 
               className={`flex-1 py-5 rounded-[20px] text-xs font-black uppercase transition-colors ${userInfo.location === "Inside Dhaka" ? "bg-slate-900 text-white" : "bg-slate-100 text-slate-400 hover:bg-slate-200"}`}
             >
-              Dhaka City
+              ঢাকার মধ্যে
             </button>
             <button 
               onClick={() => setUserInfo({...userInfo, location: "Outside Dhaka"})} 
               className={`flex-1 py-5 rounded-[20px] text-xs font-black uppercase transition-colors ${userInfo.location === "Outside Dhaka" ? "bg-slate-900 text-white" : "bg-slate-100 text-slate-400 hover:bg-slate-200"}`}
             >
-              Outside Dhaka
+              ঢাকার বাইরে
             </button>
           </div>
         </div>
@@ -317,7 +317,7 @@ export default function Home() {
           </div>
           <div className="border-t border-blue-200 pt-4 space-y-1 text-slate-800">
             <p>🧱 <b>সাবটোটাল:</b> ৳{subtotal}</p>
-            <p>🛳️ <b>শিপিং:</b> ৳{cart.length ? shipping : 0}</p>
+            <p>🛳️ <b>ডেলিভারি চার্জ:</b> ৳{cart.length ? shipping : 0}</p>
             <p className="text-lg font-black text-green-700">💰 মোট: ৳{total}</p>
           </div>
         </div>
